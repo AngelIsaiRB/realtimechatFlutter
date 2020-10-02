@@ -4,6 +4,13 @@ require('dotenv').config();
 
 // App de Express
 const app = express();
+//db config
+const {dbConnection} = require("./database/config");
+dbConnection();
+
+// lectura de body http
+app.use(express.json());
+
 
 // Node Server
 const server = require('http').createServer(app);
@@ -16,6 +23,9 @@ require('./sockets/socket');
 // Path público
 const publicPath = path.resolve( __dirname, 'public' );
 app.use( express.static( publicPath ) );
+
+// mis rutas
+app.use("/api/login", require("./routes/auth"));
 
 
 
