@@ -2,18 +2,12 @@
 api/login
 */
 
-const{ Router, response } = require("express");
+const{ Router } = require("express");
+const { crearUsuario } = require("../controllers/auth");
 
 const router =Router();
 
-router.post("/new",(req,res=response)=>{
-
-    res.json({
-        ok:true,
-        msg:"crear Usuario"
-
-    });
-} );
+router.post("/new",crearUsuario );
 
 
 module.exports=router;
