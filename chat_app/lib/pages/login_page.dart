@@ -1,3 +1,4 @@
+import 'package:chat_app/helpers/alerta.dart';
 import 'package:chat_app/widgets/btn_azul.dart';
 import 'package:flutter/material.dart';
 
@@ -48,9 +49,11 @@ class _Form extends StatefulWidget {
 class __FormState extends State<_Form> {
   final emailController=TextEditingController();
   final passwCrdcontroller=TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
+    final authService= Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top:40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -70,12 +73,16 @@ class __FormState extends State<_Form> {
            ),
            BtnAzul(
              placeholder: "Ingresar",
-             onpress: (){
-               print("email: ${emailController.text}");
-               print("contrseña: ${passwCrdcontroller.text}");
-               final authService= Provider.of<AuthService>(context, listen: false);
-               authService.login(emailController.text, passwCrdcontroller.text);
-               
+             onpress: authService.autenticando ? null : ()async {   
+               FocusScope.of(context).unfocus();
+               final loginOk = await authService.login(emailController.text.trim(), passwCrdcontroller.text.trim());               
+               if(loginOk){
+                 //otrapantalla
+               }
+               else{
+                 //mostrar alerta
+                 mostrarAlerta(context, "credenciales incorrectas", "reintentalo");
+               }
              },
            ),
          ],

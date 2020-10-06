@@ -12,9 +12,9 @@ class UsuariosPage extends StatefulWidget {
 
 class _UsuariosPageState extends State<UsuariosPage> {
   final usuarios=[
-    Usuario(id: "1", nombre: "Maria", email: "test2@hotmail.com", online: false ),
-    Usuario(id: "2", nombre: "isai", email: "test4@hotmail.com", online: true ),
-    Usuario(id: "3", nombre: "angel", email: "test5@hotmail.com", online: true ),
+    Usuario(uid: "1", nombre: "Maria", email: "test2@hotmail.com", online: false ),
+    Usuario(uid: "2", nombre: "isai", email: "test4@hotmail.com", online: true ),
+    Usuario(uid: "3", nombre: "angel", email: "test5@hotmail.com", online: true ),
   ];
   RefreshController _refreshController = RefreshController(initialRefresh: false);
   @override
