@@ -77,7 +77,8 @@ class __FormState extends State<_Form> {
                FocusScope.of(context).unfocus();
                final loginOk = await authService.login(emailController.text.trim(), passwCrdcontroller.text.trim());               
                if(loginOk){
-                 //otrapantalla
+                 Navigator.pushReplacementNamed(context, "usuarios");
+                 //conectar a socekt se
                }
                else{
                  //mostrar alerta
