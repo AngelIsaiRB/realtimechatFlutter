@@ -66,7 +66,62 @@ final _storage =  new FlutterSecureStorage();
    
  }
 
-   Future _guardarToken(String token)async {
+ Future  register(String name, String email, String password)async {
+    this.autenticando=true;
+    final data= {
+      "nombre":name,
+     "email":email,
+     "password":password
+    };
+    final resp = await  http.post("${Environment.apiUrl}/login/new",
+   body: jsonEncode(data),
+   headers: {
+     "Content-Type": "application/json"
+   }   
+   );
+  print (resp.body);
+  this.autenticando=false;
+  if(resp.statusCode==200){
+    final loginresponse= loginResponseFromJson(resp.body);
+    this.usuario=loginresponse.usuario;    
+    await this._guardarToken(loginresponse.token);
+    return true;
+   }
+   else
+   {
+     final respuesta = jsonDecode(resp.body);
+     return respuesta["msg"];
+   }
+
+ }
+
+  Future<bool> isLoogedIN() async {
+
+    final token = await this._storage.read(key: "token");
+    print(token);
+    final resp = await  http.get("${Environment.apiUrl}/login/renew",   
+   headers: {
+     "Content-Type": "application/json",
+     "x-token":token
+   }   
+   );
+  print (resp.body);
+  
+  if(resp.statusCode==200){
+    final loginresponse= loginResponseFromJson(resp.body);
+    this.usuario=loginresponse.usuario;    
+    await this._guardarToken(loginresponse.token);
+    return true;
+   }
+   else
+   {
+     this.logOut();
+     return false;
+   }
+      
+  }
+
+  Future _guardarToken(String token)async {
 
     return  await _storage.write(key: "token", value: token);      
   }
