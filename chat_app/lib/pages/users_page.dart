@@ -35,7 +35,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
             // desconectar del server socket
             AuthService.deleteToken();
             Navigator.pushReplacementNamed(context,"login");
-          },
+          },  
         ),
         actions: [
           Container(
