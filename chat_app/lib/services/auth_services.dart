@@ -29,7 +29,7 @@ final _storage =  new FlutterSecureStorage();
     return token;
   }
 
-  static Future <void> delete() async{
+  static Future <void> deleteToken() async{
     final _storage =  new FlutterSecureStorage();
     final token= await _storage.delete(key: "token");
     
@@ -49,7 +49,7 @@ final _storage =  new FlutterSecureStorage();
      "Content-Type": "application/json"
    }   
    );
-   print (resp.body);
+  
    this.autenticando=false;
    if(resp.statusCode==200){
     final loginresponse= loginResponseFromJson(resp.body);
@@ -79,7 +79,7 @@ final _storage =  new FlutterSecureStorage();
      "Content-Type": "application/json"
    }   
    );
-  print (resp.body);
+  
   this.autenticando=false;
   if(resp.statusCode==200){
     final loginresponse= loginResponseFromJson(resp.body);
@@ -105,7 +105,7 @@ final _storage =  new FlutterSecureStorage();
      "x-token":token
    }   
    );
-  print (resp.body);
+ 
   
   if(resp.statusCode==200){
     final loginresponse= loginResponseFromJson(resp.body);

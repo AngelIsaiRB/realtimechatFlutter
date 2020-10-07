@@ -40,7 +40,7 @@ Future checkLoginState(BuildContext context)async{
   }
   else{
    Navigator.pushReplacement(context,
-      PageRouteBuilder(
+      PageRouteBuilder( 
         pageBuilder: ( _, __,___)=>LoginPage(),
         transitionDuration: Duration(milliseconds: 0)
       )    
