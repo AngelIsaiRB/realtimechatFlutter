@@ -1,8 +1,9 @@
-import 'package:chat_app/helpers/alerta.dart';
-import 'package:chat_app/services/auth_services.dart';
-import 'package:chat_app/widgets/btn_azul.dart';
 import 'package:flutter/material.dart';
+import 'package:chat_app/services/auth_services.dart';
+import 'package:chat_app/services/socket_service.dart';
 
+import 'package:chat_app/widgets/btn_azul.dart';
+import 'package:chat_app/helpers/alerta.dart';
 import 'package:chat_app/widgets/custom_imput.dart';
 import 'package:chat_app/widgets/label_widget.dart';
 import 'package:chat_app/widgets/logo_widget.dart';
@@ -54,6 +55,7 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService= Provider.of<AuthService>(context);
+    final socketService= Provider.of<SocketService>(context);
     return Container(
       margin: EdgeInsets.only(top:40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -85,6 +87,7 @@ class __FormState extends State<_Form> {
                print("contrseña: ${nameController.text}");
               final createOk = await authService.register(nameController.text.trim(), emailController.text.trim(), passwCrdcontroller.text.trim());
               if(createOk==true){
+                socketService.connect();
                  Navigator.pushReplacementNamed(context, "usuarios");
                  //conectar a socekt se
                }
