@@ -1,4 +1,5 @@
 import 'package:chat_app/services/socket_service.dart';
+import 'package:chat_app/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -14,12 +15,17 @@ class UsuariosPage extends StatefulWidget {
 }
 
 class _UsuariosPageState extends State<UsuariosPage> {
-  final usuarios=[
-    Usuario(uid: "1", nombre: "Maria", email: "test2@hotmail.com", online: false ),
-    Usuario(uid: "2", nombre: "isai", email: "test4@hotmail.com", online: true ),
-    Usuario(uid: "3", nombre: "angel", email: "test5@hotmail.com", online: true ),
-  ];
+  
+  final usuarioSErvice = new UsuariosService();
+  List<Usuario> usuarios=[];
   RefreshController _refreshController = RefreshController(initialRefresh: false);
+  @override
+  void initState() {
+   this._cargarUsuarios();
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -92,7 +98,11 @@ class _UsuariosPageState extends State<UsuariosPage> {
   }
 
    _cargarUsuarios() async{
-     await Future.delayed(Duration(milliseconds: 500));
+    // await Future.delayed(Duration(milliseconds: 500));
+    this.usuarios= await  usuarioSErvice.getUsuarios();
+    setState(() {
+      
+    });
      _refreshController.refreshCompleted();
   }
 }
