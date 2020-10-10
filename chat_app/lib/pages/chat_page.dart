@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:chat_app/services/auth_services.dart';
+import 'package:chat_app/services/chat_service.dart';
+import 'package:chat_app/services/socket_service.dart';
 import 'package:chat_app/widgets/chat_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key key}) : super(key: key);
@@ -15,12 +19,43 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
  final _texcontroller = new TextEditingController();
  final _focusNode =  new FocusNode();
+
+
+  ChatServie chatService;
+  SocketService socketService;
+  AuthService autService;
+
+
  bool _estaEscribiendo=false;
- List<ChatMessage> _messages=[
-   
- ];
+ List<ChatMessage> _messages=[];
+
+  @override
+  void initState() {
+    super.initState();
+    this.chatService= Provider.of<ChatServie>(context, listen: false);
+    this.socketService= Provider.of<SocketService>(context, listen: false);
+    this.autService= Provider.of<AuthService>(context, listen: false);
+    this.socketService.socket.on("mensaje-personal", _escucharmensaje);
+  }
+
+  void _escucharmensaje(dynamic payload){
+    ChatMessage message = new ChatMessage(
+      texto: payload["mensaje"], 
+      uid: payload["de"], 
+      animationController: AnimationController(vsync: this,duration: Duration(milliseconds: 300))
+      );
+
+      setState(() {
+        _messages.insert(0,message);
+      });
+      message.animationController.forward();
+  }
+
   @override
   Widget build(BuildContext context) {
+    
+    final usuariopara = this.chatService.usuarioPara;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -29,12 +64,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         title: Column(
           children: [
             CircleAvatar(
-              child: Text("Te", style: TextStyle(fontSize: 12,)),
+              child: Text(usuariopara.nombre.substring(0,2), style: TextStyle(fontSize: 12,)),
               backgroundColor: Colors.blue[100],
               maxRadius: 14,
             ),
             SizedBox(height: 3,),
-            Text("nombre de usuario", style: TextStyle(color: Colors.black87, fontSize: 12),),
+            Text(usuariopara.nombre, style: TextStyle(color: Colors.black87, fontSize: 12),),
           ],
         ),
       ),
@@ -118,7 +153,7 @@ Widget _inputChat(){
 
 _handleSubmit(String texto){
   if (texto.length==0)return;
-  print (texto);
+  
   _focusNode.requestFocus();
   _texcontroller.clear();
   final newMessage = new ChatMessage(
@@ -131,6 +166,12 @@ _handleSubmit(String texto){
   setState(() {
     _estaEscribiendo=false;
   });
+
+  this.socketService.emit("mensaje-personal",{
+   "de": this.autService.usuario.uid,
+   "para": this.chatService.usuarioPara.uid,
+    "mensaje": texto
+  });
 }
 
 @override
@@ -139,6 +180,7 @@ _handleSubmit(String texto){
     for(ChatMessage message in _messages){
       message.animationController.dispose();
     }
+     this.socketService.socket.off("mensaje-personal");
     super.dispose();
   }
 }
